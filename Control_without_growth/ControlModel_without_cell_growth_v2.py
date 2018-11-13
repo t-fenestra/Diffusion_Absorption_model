@@ -10,7 +10,7 @@ from math import exp, fsum, ceil
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.sparse.linalg import cgs,bicg,spsolve
-from scipy.sparse import csr_matrix,dia_matrix
+from scipy.sparse import csr_matrix
 from datetime import datetime
 import time
 
@@ -32,7 +32,7 @@ dx=float(Xlength)/Nlayers
 X=[(i+1)*dx for i in range(Nlayers)]
 
 dt=0.01
-NtimeSteps=300 #-10 hours
+NtimeSteps=100 #3600000 #-8 hours
 Lambda=D*dt/(dx*dx)
 
 # Saving data to the file # how frequent to save
@@ -50,7 +50,7 @@ A=np.zeros((NTsave,3))          #  3colums array A-sep A-grown A-transition
 mu=Xlength/2.0
 sigma=Xlength*0.1
 S0=10000.0
-Sprev=S0*[1 for i in range(Nlayers)]
+Sprev=[S0 for i in range(Nlayers)]
 TotalStep0=np.sum(Sprev)
 Stotal[0]=TotalStep0
 #plt.plot(X,Sprev)
@@ -96,7 +96,7 @@ for i in range(1,NtimeSteps):
     if (i % Nfreq)==0:
         print(i)
         SProfile[0:Nlayers,counter]=Snext
-        Stotal[counter]=fsum(Snext)*Xlength
+        Stotal[counter]=fsum(Snext)
         A[counter,0]=Anext
         A[counter,1]=WA*Anext*dt
         A[counter,2]=P*Lambda*Snext[0]

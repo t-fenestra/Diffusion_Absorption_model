@@ -6,25 +6,25 @@ Control kinetic model without cellulose
 @author: pichugina
 """
 import sys
-from math import exp, fsum, ceil
+from math import fsum
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.sparse.linalg import cgs,bicg,spsolve
-from scipy.sparse import csr_matrix,dia_matrix
+#import matplotlib.pyplot as plt
+from scipy.sparse.linalg import spsolve
+from scipy.sparse import csr_matrix
 from datetime import datetime
-import time
+#import time
 
 
+#def main(argv):
 
-start_time = time.clock()
 # Model parameters 
 ###############################################################################
 
 WA=0 #3.7e-4       # [1/s]  A-attached type grownth rate
 WS=0 #3.7e-4       # [1/s]  S-swimming type grownth rate
-Xlength=350     # [mkm] total length of the layer in mkm
-D=0.1           # [mkm2/s] diffusion constant
-P=1          # [] adsorbtion probability
+Xlength=350.0     # [mkm] total length of the layer in mkm
+D=1.5           # [mkm2/s] diffusion constant
+P=float(sys.argv[1])           # [] adsorbtion probability
 
 #Simulation parameters
 Nlayers=100
@@ -32,7 +32,7 @@ dx=float(Xlength)/Nlayers
 X=[(i+1)*dx for i in range(Nlayers)]
 
 dt=0.01
-NtimeSteps=300 #-10 hours
+NtimeSteps=3000000 #- 3000000 8 hours
 Lambda=D*dt/(dx*dx)
 
 # Saving data to the file # how frequent to save
@@ -50,7 +50,7 @@ A=np.zeros((NTsave,3))          #  3colums array A-sep A-grown A-transition
 mu=Xlength/2.0
 sigma=Xlength*0.1
 S0=10000.0
-Sprev=S0*[1 for i in range(Nlayers)]
+Sprev=[S0 for i in range(Nlayers)]
 TotalStep0=np.sum(Sprev)
 Stotal[0]=TotalStep0
 #plt.plot(X,Sprev)
@@ -84,7 +84,7 @@ Smatrix[0,1]=-Lambda
 Smatrix[Nlayers-1,Nlayers-2]=-Lambda
 Smatrix[Nlayers-1,Nlayers-1]=1+Lambda-WS*dt   
 SMatrixSparse = csr_matrix(Smatrix)
-SMatrixSparse = SMatrixSparse.astype(np.float64)
+#SMatrixSparse = SMatrixSparse.astype(np.float64)
  
 # Solve matrix equations Smatrix
 counter=1;
@@ -96,7 +96,7 @@ for i in range(1,NtimeSteps):
     if (i % Nfreq)==0:
         print(i)
         SProfile[0:Nlayers,counter]=Snext
-        Stotal[counter]=fsum(Snext)*Xlength
+        Stotal[counter]=fsum(Snext)
         A[counter,0]=Anext
         A[counter,1]=WA*Anext*dt
         A[counter,2]=P*Lambda*Snext[0]
@@ -110,17 +110,17 @@ for i in range(1,NtimeSteps):
 ###############################################################################
 # Save to file    
 ###############################################################################
-plt.plot(Total)
-plt.title("Total")
-plt.show()
-plt.plot(SProfile)
-plt.title("Sprev")
-plt.show()
-plt.plot(A[1:NTsave,0])
+#plt.plot(Total)
+#plt.title("Total")
+#plt.show()
+#plt.plot(SProfile)
+#plt.title("Sprev")
+#plt.show()
+#plt.plot(A[1:NTsave,0])
 
     
 # files with profile
-root_folder='/Users/pichugina/Work/Diffusion_Absorption_model/Control_without_growth/'
+root_folder=''
 datastamp=datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 filename_Sprofile=root_folder+datastamp+'__Stype_profile.txt'
 filename_A=root_folder+datastamp+'__Atype_profile.txt';
@@ -151,8 +151,9 @@ for line in Text:
     f.write(line)
 f.close()
 ###############################################################################
-print time.clock() - start_time, "seconds"
 
+#if __name__ == "__main__":
+#    main(sys.argv[1:])
 
 
 
