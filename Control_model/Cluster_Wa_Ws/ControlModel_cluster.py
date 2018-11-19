@@ -80,7 +80,7 @@ for i in range(1,Nlayers-1):
     
  # Boundary conditions
 # Adsorbing boundary 
-Smatrix[0,0]=1+2*Lambda-Lambda*(1-P)-WS*dt
+Smatrix[0,0]=1+2*Lambda-Lambda*(1-P)-WS*dt0
 Smatrix[0,1]=-Lambda
 # Reflective boundary
 Smatrix[Nlayers-1,Nlayers-2]=-Lambda

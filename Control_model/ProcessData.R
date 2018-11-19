@@ -1,4 +1,4 @@
-pathFiles='/Users/pichugina/Work/Diffusion_Absorption_model/Control_without_growth/D_1.5/'
+pathFiles='/Users/pichugina/Work/Diffusion_Absorption_model/Control_model/Cluster_Wa_Ws/WaWs'
 setwd(pathFiles)
 library(reshape2)
 library(tidyverse)
