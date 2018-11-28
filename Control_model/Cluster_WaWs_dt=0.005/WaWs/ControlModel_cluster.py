@@ -8,7 +8,7 @@ Control kinetic model without cellulose
 import sys
 from math import fsum
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from scipy.sparse.linalg import spsolve
 from scipy.sparse import csr_matrix
 from datetime import datetime
@@ -23,29 +23,20 @@ from random import randint
 ###############################################################################
 
 WA=3.7e-4       # [1/s]  A-attached type grownth rate
-WS=3.7e-4         # [1/s]  S-swimming type grownth rate
+WS=3.7e-4       # [1/s]  S-swimming type grownth rate
 Xlength=350.0     # [mkm] total length of the layer in mkm
-D0=0.1 #float(sys.argv[2])          # [mkm2/s] diffusion constant
-
-Nlayers=100
-Nstep=10          # layers with step
-StepF=0.5
-D=[D0 for i in range(Nlayers)]
-Dstep=[StepF*D0 for i in range(Nstep)]
-D[0:Nstep]=Dstep
-P=1 #1.0 #float(sys.argv[1])           # [] adsorbtion probability
+D=float(sys.argv[2])          # [mkm2/s] diffusion constant
+P=float(sys.argv[1])           # [] adsorbtion probability
 
 #Simulation parameters
-
+Nlayers=100
 dx=float(Xlength)/Nlayers
 X=[(i+1)*dx for i in range(Nlayers)]
 
-
 dt=0.005
 NtimeSteps=2000000 #- 3000000 8 hours
-Lambda=[D[i]*dt/(dx*dx) for i in range(Nlayers)]
+Lambda=D*dt/(dx*dx)
 
-#%%
 # Saving data to the file # how frequent to save
 Nfreq=NtimeSteps/1000                      
 NTsave=int(NtimeSteps/Nfreq)
@@ -83,17 +74,17 @@ Total[0]=0
 # Coefficient matrix
 Smatrix=np.zeros((Nlayers,Nlayers))
 for i in range(1,Nlayers-1):
-    Smatrix[i,i-1]=-Lambda[i]
-    Smatrix[i,i]=1+Lambda[i]+Lambda[i+1]-WS*dt
-    Smatrix[i,i+1]=-Lambda[i+1]
+    Smatrix[i,i-1]=-Lambda
+    Smatrix[i,i]=(1+2*Lambda-WS*dt)
+    Smatrix[i,i+1]=-Lambda
     
  # Boundary conditions
 # Adsorbing boundary 
-Smatrix[0,0]=1+Lambda[1]+Lambda[0]-Lambda[0]*(1-P)-WS*dt
-Smatrix[0,1]=-Lambda[1]
+Smatrix[0,0]=1+2*Lambda-Lambda*(1-P)-WS*dt
+Smatrix[0,1]=-Lambda
 # Reflective boundary
-Smatrix[Nlayers-1,Nlayers-2]=-Lambda[Nlayers-1]
-Smatrix[Nlayers-1,Nlayers-1]=1+Lambda[Nlayers-1]-WS*dt   
+Smatrix[Nlayers-1,Nlayers-2]=-Lambda
+Smatrix[Nlayers-1,Nlayers-1]=1+Lambda-WS*dt   
 SMatrixSparse = csr_matrix(Smatrix)
 #SMatrixSparse = SMatrixSparse.astype(np.float64)
  
@@ -101,7 +92,7 @@ SMatrixSparse = csr_matrix(Smatrix)
 counter=1;
 for i in range(1,NtimeSteps):
     Snext=spsolve(SMatrixSparse,Sprev)
-    Anext=(P*Lambda[0]*Snext[0]+Aprev)/(1-WA*dt) #
+    Anext=(P*Lambda*Snext[0]+Aprev)/(1-WA*dt) #
     
     # save profile every Nfreq steps
     if (i % Nfreq)==0:
@@ -110,7 +101,7 @@ for i in range(1,NtimeSteps):
         Stotal[counter]=fsum(Snext)
         A[counter,0]=Anext
         A[counter,1]=WA*Anext*dt
-        A[counter,2]=P*Lambda[0]*Snext[0]
+        A[counter,2]=P*Lambda*Snext[0]
         Total[counter]=Anext+fsum(Snext)-TotalStep0
         counter=counter+1
     
@@ -121,14 +112,13 @@ for i in range(1,NtimeSteps):
 ###############################################################################
 # Save to file    
 ###############################################################################
-plt.plot(Total)
-plt.title("Total")
-plt.show()
-plt.plot(SProfile)
-plt.title("Sprofile")
-plt.show()
-plt.plot(A[1:NTsave,0])
-plt.title("Atotal")
+#plt.plot(Total)
+#plt.title("Total")
+#plt.show()
+#plt.plot(SProfile)
+#plt.title("Sprev")
+#plt.show()
+#plt.plot(A[1:NTsave,0])
 
     
 # files with profile
@@ -151,17 +141,12 @@ Text=[]
 Text.append("WA\t%4.10f\t1/sec\t\n" %WA)
 Text.append("WS\t%4.10f\t1/sec\t \n" %WS)
 Text.append("Xlength\t%4.4f\tmkm\t\n" %Xlength)
-Text.append("D0\t%4.4f\tmkm^2/s\t\n" %D0)
-Text.append("StepF\t%4.4f\t[]/s\t\n" %StepF)
-Text.append("Nstep\t%4.4f\t[]/s\t\n" %Nstep)
+Text.append("D\t%4.4f\tmkm^2/s\t\n" %D)
 Text.append("P\t%4.4f\t[]\t\n" %P)
 Text.append("dt\t%4.4f\ts\t\n" %dt)
 Text.append("Nlayers\t%4.4f\t[]\t\n" %Nlayers)
-
-TimeStep=dt*Nfreq
 Text.append("Nfreq\t%4.4f\t[]\t\n" % Nfreq)
 Text.append("NtimeSteps\t%4.4f\t[]\t\n" %NtimeSteps)
-Text.append("TimeStep\t%4.4f\t[]\t\n" %TimeStep)
 
 f = open(filename_parameters, 'a')
 for line in Text:
