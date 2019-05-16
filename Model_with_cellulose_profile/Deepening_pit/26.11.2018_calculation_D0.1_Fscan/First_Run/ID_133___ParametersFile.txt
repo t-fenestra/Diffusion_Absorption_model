@@ -1,0 +1,11 @@
+WA	0.0003700000	1/sec	
+WS	0.0003700000	1/sec	 
+Xlength	350.0000	mkm	
+D0	0.1000	mkm^2/s	
+StepF	2.0000	[]/s	
+Nstep	10.0000	[]/s	
+P	1.0000	[]	
+dt	0.0100	s	
+Nlayers	100.0000	[]	
+Nfreq	30000.0000	[]	
+NtimeSteps	3000000.0000	[]	
