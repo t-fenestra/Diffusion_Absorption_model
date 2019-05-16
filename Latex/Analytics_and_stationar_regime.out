@@ -1,0 +1,14 @@
+\BOOKMARK [0][-]{part.1}{I Kinetic model of biofilm formation}{}% 1
+\BOOKMARK [1][-]{section.1}{Introduction}{part.1}% 2
+\BOOKMARK [1][-]{section.2}{Stochastic process to descibe reactive boundary }{part.1}% 3
+\BOOKMARK [1][-]{section.3}{Kinetic equations}{part.1}% 4
+\BOOKMARK [1][-]{section.4}{Analytical solution}{part.1}% 5
+\BOOKMARK [1][-]{section.5}{Stationary solution}{part.1}% 6
+\BOOKMARK [2][-]{subsection.5.1}{S-type}{section.5}% 7
+\BOOKMARK [2][-]{subsection.5.2}{A-type}{section.5}% 8
+\BOOKMARK [1][-]{section.6}{Numerical solution}{part.1}% 9
+\BOOKMARK [2][-]{subsection.6.1}{In the bulk}{section.6}% 10
+\BOOKMARK [2][-]{subsection.6.2}{At the adsorbing boundary x=0}{section.6}% 11
+\BOOKMARK [2][-]{subsection.6.3}{At the reflective boundary x=L}{section.6}% 12
+\BOOKMARK [1][-]{section.7}{Model with revertants}{part.1}% 13
+\BOOKMARK [2][-]{subsection.7.1}{Bakward-propogation for numerical calculation}{section.7}% 14

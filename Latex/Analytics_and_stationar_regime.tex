@@ -1,0 +1,476 @@
+\documentclass[10pt, oneside]{article}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{lineno}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{natbib}
+\usepackage{layout}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{enumerate}
+\usepackage{authblk}
+\usepackage[top=2.5cm, bottom=2.5cm, inner=4cm, outer=2cm]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{todonotes}
+\definecolor{darkblue}{rgb}{0,0,0.75}
+\definecolor{darkred}{rgb}{0.75,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+
+
+\newcommand{\YP}[1]{\textbf{\textcolor{blue}{{YP: [}#1{]}}}}
+\newcommand{\here}{\textbf{\textcolor{red}{ I am here!!! }}}
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\bbar}[1]{\overline{#1}}
+
+\newcommand{\season}{\mathcal{S}}			%season
+\newcommand{\env}{\mathcal{D}}			%environment
+\newcommand{\LC}{\mathbf{q}}			%life cycle
+
+%\linespread{1.6}
+\setcounter{secnumdepth}{6}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ARTICLE SETUP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title {Kinetic model of biofilm formation}
+
+%\author[1]{Tatyana Pichugina}
+%\author[2]{Yuriy Pichugin}
+%\affil[1]{Max Planck Institute for Evolutionary Biology, August-Thienemann-Str. 2, 24306 Pl\"on, Germany}
+
+
+%\corr{pichugina@evolbio.mpg.de}{YP}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ARTICLE START
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{plainnat}
+
+\begin{document}
+\linenumbers
+
+\maketitle
+
+\tableofcontents
+\clearpage
+%
+%\begin{abstract}
+%Amazing abstract
+%\end{abstract}
+
+
+\part{Kinetic model of biofilm formation}\section{Introduction}
+
+Consider a static liquid media with air-liquid interface (or glass-liquid).
+Media is populated by the cells of type S (swimming), ALI is populated by cells of type A (attached).
+The population of S-type cells is characterized by their density $S(x,t)$ changing with depth ($x$) and time ($t$).
+The depth changes from $0$ (ALI) to $L$ (the bottom).
+The population of A-type cells is characterized by its number at ALI $A(t)$ changing with time.
+S-type cells can grow with the rate $w_S$, diffuse with coefficient $D$, and attach to the ALI at the border with coefficient $\kappa$ becoming cells of A-type.
+A-type cells just grow with the rate $w_A$.
+
+\section{Stochastic process to descibe reactive boundary }
+This simple reactive-diffusion model can be described using deterministic partial-differential equation or stochastic simulation algorithms. These both approaches provide same description of the reactive-diffusion process far from the reactive boundary at the interface, but the behavior close to the reactive boundary is dependent on selected stochastic process (Erban and Chapman 2007). \par
+Here we consider a stochastic simulation algorithm on the lattice size $[0,L]$ (Erban and Chapman 2007). We consider a system with $N$ particles of the planktonic type $S$ on the lattice lattice grids spaced $h$ distance apart. We choose the interval step $\Delta t$ so it satisfies stability condition ($ 2D\Delta t\ll h^{2}$) . The position of $i$-th molecule at the time $t$ is equal to $x_i (t)$. The position $x_i (t+\Delta t)$  is computed as follows.
+
+\begin{equation}
+x_i(t+\Delta t)=\begin{cases}
+x_i(t), &\text{probability $=1-\frac{2D\Delta t}{h^{2}} $}\\
+x_i(t)+h,  &\text{probability $=\frac{2 D \Delta t}{h^{2}} $}\\
+x_i(t)-h,  &\text{probability $=\frac{2 D \Delta t}{h^{2}} $}\\
+\end{cases}	
+\end{equation}
+
+If molecule hits the boundary $x=0$, it is adsorbed with probability $P_1h$ or reflected otherwise. Here $ P_1$ is non negative constant.
+
+Let the probability finding a cell in the bulk satisfies.
+
+\begin{equation}
+p_k(t+\Delta t)=(1-\dfrac{2D\Delta t }{h^{2}})\cdot p_k(t)+
+\dfrac{2D\Delta t }{h^{2}} \cdot (p_{k+1}(t) + p_{k-1}(t))
+\end{equation}
+
+Passing the limit $\Delta t \rightarrow 0,  h\rightarrow 0$ equation (2) 
+we obtain diffusion equation.
+\begin{equation}
+\frac{p_k(t+\Delta t)-p_k(t)}{\Delta t}=
+D \frac{p_k(t)+p_{k-1}(t)-2p_k(t)}{h^{2}}
+\end{equation}
+
+\begin{equation}
+\frac{\partial n(x,t)}{ \partial t}=
+D \cdot \bigtriangledown^2 n(x,t)
+\end{equation}
+
+Where $n(x,t)$ is a concentration of particles in space $x$ and time $t$.
+
+
+
+The boundary condition can be incorporated into equation as 
+\begin{equation}
+p_1(t+\Delta t)=(1-\dfrac{2D\Delta t }{h^{2}})\cdot p_1(t)+
+\dfrac{D\Delta t }{h^{2}} \cdot (p_{2}(t) +(1-P_1h) p_{1}(t))
+\end{equation}
+
+This equation can be rewritten as
+\begin{equation}
+\sqrt{\Delta t} \cdot \frac{p_1(t+\Delta t)-p_1(t)}{\Delta t}=
+\frac{D \cdot \sqrt{\Delta t}}{h}  \cdot
+\left (\frac{p_2(t)-p_1(t)}{h}-P_1p_1(t) \right )
+\end{equation} 
+
+Passing the limit $\Delta t \rightarrow 0,  h\rightarrow 0$  such that $ \sqrt{\Delta t}/h$ is kept constant we obtain boundary condition as
+\begin{equation}
+D\frac{p_2(t)-p_1(t)}{h}=P_1D \cdot p_1(t) 
+\end{equation}
+
+\begin{equation}
+D\cdot \frac{\partial n}{ \partial x}(x=0,t)=
+P_1D  \cdot n(x=0,t)
+\end{equation}
+
+Note that $P_1$ is a given non-negative constant and  $P_1h$ is probability of adsorbtion, where $h$ is a grid size.
+
+
+\section{Kinetic equations}
+
+The dynamics of S-type is given by the equation
+%
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:s-dyn}
+	\frac{\partial}{\partial t} S(x,t)= w_SS(x,t) + D \frac{\partial^2}{\partial x^2} S(x,t)
+	\end{align}
+\end{linenomath}
+%
+with boundary conditions
+%
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:s-boundary}
+	\begin{cases}
+	D \frac{\partial}{\partial x} S(0,t) = P_1D \cdot S(0,t),  &\text{ partially adsorbing boader}\\\\ 
+	\frac{\partial}{\partial x} S(L,t) = 0, &\text{ reflective boader}\\
+	\end{cases}
+	\end{align}
+\end{linenomath}
+%
+where $w_S$ is a grownth rate of the S-type, $D$ is a diffusion coefficient, $P_1$ is a non-negative constant.
+At $P_1 = 1$,  the boundary condition becomes absorbing $S(0,t) = 0$.
+At $P_1 = 0$, the boundary condition becomes reflective $\frac{\partial}{\partial x} S(0,t) = 0$.
+\newline
+\newline
+The growth dynamics of A-type is given by the equation
+%
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:a-dyn}
+	\frac{\partial}{\partial t} A = w_A A + P_1D \cdot S(0,t).
+	\end{align}
+\end{linenomath}
+%
+Where $w_A$ is a growth rate of A-type, term $P_1D \cdot S(0,t)$ is transition flux from S-type to A-type.
+
+\section{Analytical solution}
+We look for solution of the form $S(x,t)=X(x)T(t)\cdot e^{w_St}$. By substitution $S(x,t)$ into the PDE Eq.~\eqref{eq:s-dyn} and solving for X(x)T(t) we get.
+
+\begin{linenomath}
+	\begin{align} 
+	\frac{T'}{DT}=\frac{X''}{X}=-\lambda^2
+	\end{align}
+\end{linenomath}
+
+As a result we get
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:a-solution}
+	S(x,t)=e^{w_St-\lambda^2Dt}\left(Bsin(\lambda x)+Ccos(\lambda x )\right)
+	\end{align}
+\end{linenomath}
+Where $A,B$ and $ \lambda$ are arbitrary.\\
+
+The next step is to find a certain subset of solutions that satisfy boundary conditions Eq.~\eqref{eq:s-boundary}. To do this we substitute ~\eqref{eq:a-solution} to the ~\eqref{eq:s-boundary}.
+
+\begin{linenomath}
+	\begin{align} 
+	\begin{cases}
+	D\lambda B=P_1DC \\
+	B\lambda cos(\lambda L)-C \lambda sin(\lambda L)=0 \\
+	\end{cases}
+	\end{align}
+\end{linenomath}
+
+Last equations give us the condition on $\lambda$.
+\begin{linenomath}
+	\begin{align} 
+    tan(\lambda L)=\dfrac{P_1}{\lambda}
+	\end{align}
+\end{linenomath}
+
+To find $\lambda$ we must find the intersection of the curves $tan(\lambda L)$ and $P_1/\lambda$.
+\begin{figure}[h!]
+	\includegraphics[width=\linewidth]{tan_lambda.png}
+	\caption{$\lambda_1, \lambda_2, \lambda_3 ...$ are the intersection of the curves $tan(\lambda L)$ and $P_1 L/\lambda L$}
+	%\label{fig:boat1}
+\end{figure}
+
+ These values $\lambda_1, \lambda_2, \lambda_3 ...$ can be computed numerically and called eigenvalues of the boundary-value problem. In other words, they are values of $\lambda$ for which nonzero solution exsist.
+ \\
+ So we have found an infite number of fundamental solutions such as 
+ \begin{linenomath}
+ 	\begin{align} 
+ 	\label{eq:a-fund-solution}
+ 	S_n=e^{w_St-\lambda^2Dt}\left(B_nsin(\lambda_n x)+C_ncos(\lambda_n x )\right)
+ 	\end{align}
+ \end{linenomath}
+Each of this solution satisfies PDE and boundary condition.
+The analytical solution for $S(x,t)$ is
+\begin{linenomath}
+	\begin{align} 
+	S(x,t)=\sum_{n=1}^{\infty} e^{w_St-\lambda_n^2Dt}\left(B_nsin(\lambda_n x)+C_ncos(\lambda_n x )\right)
+	\end{align}
+\end{linenomath}
+
+We pick $B_n$, $C_n$ to satisfy the initial condition.$S(x,0)=f(x)$
+\begin{linenomath}
+	\begin{align} 
+	f(x)=\sum_{n=1}^{\infty}\left(B_nsin(\lambda_n x)+C_ncos(\lambda_n x )\right)
+	\end{align}
+\end{linenomath}
+
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:a-dyn}
+	\frac{\partial}{\partial t} A = w_A A + P_1D \cdot\sum_{n=1}^{\infty} e^{w_St-\lambda_n^2Dt}C_n .
+	\end{align}
+\end{linenomath}
+ 
+\section{Stationary solution}
+\subsection{S-type}
+
+The fundamental solution  Eq.~\eqref{eq:a-fund-solution} has a decay term $ e^{-\lambda_n^2Dt}$  The smallest value of $\lambda_n$ - $\lambda_1$ determine behaviour of the system at the stationary regime.
+To get $\lambda_1$ the Eq.~\eqref{eq:a-lambda1} equation should be solved numerically. 
+
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:a-lambda1}
+	 tan(x)=\dfrac{P_1L}{x}\\
+	\end{align}
+	\end{linenomath}
+
+where $x=\lambda L$\\
+\\
+However, some approximation can be done.  If $P_1L>>1$ then we can use the fact that $tan(\pi/2)=\infty$
+
+\begin{linenomath}
+	\begin{align} 
+	\lambda = \frac{\pi}{2L} 
+	\end{align}
+\end{linenomath}	
+
+\begin{linenomath}
+	\begin{align} 
+	S_1=e^{w_St-\frac{\pi^2}{4L^2}Dt}\left(B_1sin(\lambda x)+C_1cos(\lambda x )\right)
+	\end{align}
+\end{linenomath}
+Note if $D>\frac{4L^2w_S}{\pi^2}$ S-type fades away.
+	
+ If $P_1L<<1$ then we can use the fact that $tan(x)\approx x$
+\begin{linenomath}
+	\begin{align} 
+	\lambda = \sqrt{\frac{P_1}{L}}
+\end{align}
+\end{linenomath}
+
+\begin{linenomath}
+	\begin{align} 
+	S_1=e^{w_St-\frac{P_1}{L}Dt}\left(B_1sin(\lambda x)+C_1cos(\lambda x )\right)
+	\end{align}
+\end{linenomath}
+
+
+Note if $P_1>\frac{w_SL}{D}$ S-type fades away.
+
+
+
+\subsection{A-type}
+Stationary solution for A-type.
+
+\begin{linenomath}
+	\begin{align} 
+	\frac{\partial}{\partial t} A = w_A A + P_1D \cdot\sum_{n=1}^{\infty} e^{w_St-\lambda_n^2Dt}C_n .
+	\end{align}
+\end{linenomath}
+
+Subsitute  $\lambda = \lambda1$ and $x=0$
+\begin{linenomath}
+	\begin{align} 
+	\frac{\partial}{\partial t} A = w_A A + P_1D e^{w_St-\lambda_1^{2}Dt} \cdot C .
+	\end{align}
+\end{linenomath}
+
+Where $C$ depends on the initial conditions.\\
+We look for solution in a form $A(t)=f(t)e^{\lambda_St}$ where $\lambda_S=w_S-\lambda_1^{2}D$.
+\begin{linenomath}
+	\begin{align} 
+	f'(t)+(\lambda_S-w_A)f(t)-k = 0.
+	\end{align}
+\end{linenomath}
+where $k=P_1DC$
+
+\begin{linenomath}
+	\begin{align} 
+	f(t)=De^{-(\lambda_S-w_A)t}+\frac{k}{(\lambda_S-w_A)}
+	\end{align}
+\end{linenomath}
+
+Taking into account $f(0)=0$, $D=-\frac{k}{\lambda_S-w_A}$
+
+\begin{linenomath}
+\begin{align} 
+f(t)=\frac{k}{(\lambda_S-w_A)}\left( 1-e^{-(\lambda_S-w_A)t}\right)
+\end{align}
+\end{linenomath}
+
+As a result
+\begin{linenomath}
+	\begin{align} 
+	A(t)=\frac{k}{(\lambda_S-w_A)}\left( 1-e^{-(\lambda_S-w_A)t}\right)\cdot e^{\lambda_st}
+	\end{align}
+\end{linenomath}
+
+
+\begin{linenomath}
+	\begin{align} 
+	A(t)=\frac{P_1DC}{(w_A-\lambda_S)}\cdot \big(e^{w_At}-e^{\lambda_st}\big)
+	\end{align}
+\end{linenomath}
+
+Finally, by substitution $\lambda_S=w_S-\lambda_1^{2}D$
+
+\begin{linenomath}
+	\begin{align} 
+	A(t)=\frac{P_1DC}{(w_A-w_S+\lambda_1^{2}D)}\cdot \big(e^{w_At}-e^{w_St-\lambda_1^{2}Dt}\big)
+	\end{align}
+\end{linenomath}
+
+The number of A-cells grows by means of A-growth and S-type  transition.
+Then, for each of two regimes, this value approaches.
+\begin{enumerate}
+	\item In the growth-dominated regime $w_A >> (w_S-\lambda_1^{2}D)$, $A(t)\sim \frac{P_1DС}{w_A}\cdot^{w_A t}$ 
+	\item In the transition-dominated regime $w_A << (w_S-\lambda_1^{2}D)$, $A(t) \sim \frac{P_1DC}{w_S - \lambda_1^{2}Dt} \cdot e^{w_St-\lambda_1^{2}Dt}$.
+\end{enumerate}
+
+
+
+
+
+
+\section{Numerical solution}
+To solve kinetic equations numerucally we calculated $S(x,t)$ on a lattice grid spacing in time $\Delta t$ and space  $h$ distance apart. We choose the interval step $\Delta t$ so it satisfies stability condition ($ 2D\Delta t\ll h^{2}$) . So,the  $S_k$ is number of S-cell  at the grid point  $k$ and $A$ is number of cells at the adsorbing boader.
+\subsection{In the bulk}
+\begin{linenomath}
+	\begin{align} 
+	\frac{\partial}{\partial t} S(x,t)= w_SS(x,t) + D \frac{\partial^2}{\partial x^2} S(x,t)
+	\end{align}
+\end{linenomath}
+
+Can be rewritten as
+\begin{linenomath}
+	\begin{align} 
+	S_k(t+\Delta t)=\left(1-\dfrac{2D \Delta t}{h^2}\right) \cdot S_k(t)+
+	\dfrac{D \Delta t}{h^2}\cdot \Big(S_k(t)+ S_{k-1}(t)\Big)+
+	w_S \Delta t\cdot S_k(t)
+	\end{align}
+\end{linenomath}
+
+ 
+
+\subsection{At the  adsorbing boundary $x=0$}
+\begin{linenomath}
+	\begin{align}
+	\begin{cases} 
+	S_1(t+\Delta t)=\left(1-\dfrac{2D\Delta t}{h^2}\right) \cdot S_1(t)+
+	\dfrac{D\Delta t}{h^2}\cdot \Big(S_2(t)+(1-P_1h)\cdot S_1(t)\Big)+
+	w_S \Delta t\cdot S_1(t)\\
+	A(t+\Delta t)=A(t)+w_A \Delta t \cdot A(t)+\dfrac{2D\Delta t}{h^2} \cdot P_1h\cdot S_1(t)\\
+	\end{cases}
+	\end{align}
+\end{linenomath}
+
+\subsection{At the  reflective boundary $x=L$}
+\begin{linenomath}
+	\begin{align} 
+	S_L(t+\Delta t)=\left(1-\dfrac{2D\Delta t}{h^2}\right) \cdot S_L(t)+
+	\dfrac{D\Delta t}{h^2}\cdot S_{L-1}(t)+
+	w_S \Delta t\cdot S_L(t)
+	\end{align}
+\end{linenomath}
+
+
+\section{Model with revertants}
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:s-revertant}
+	\begin{cases}
+	\frac{\partial}{\partial t} S(x,t)= w_SS(x,t) + D \frac{\partial^2}{\partial x^2} S(x,t)+w_{AS} A \delta(x) \\
+	\frac{\partial}{\partial t} A = w_A A + P_1D \cdot S(0,t)-w_{AS} A\\	
+	\end{cases}
+	\end{align}
+\end{linenomath}
+%
+with boundary conditions
+%
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:s-boundary-revertants}
+	\begin{cases}
+	D \frac{\partial}{\partial x} S(0,t) = P_1D \cdot S(0,t),  &\text{ partially adsorbing boader}\\\\ 
+	\frac{\partial}{\partial x} S(L,t) = 0, &\text{ reflective boader}\\
+	\end{cases}
+	\end{align}
+\end{linenomath}
+%
+where $w_S$ is a grownth rate of the S-type, $D$ is a diffusion coefficient, $P_1$ is a non-negative constant.
+At $P_1 = 1$,  the boundary condition becomes absorbing $S(0,t) = 0$.
+At $P_1 = 0$, the boundary condition becomes reflective $\frac{\partial}{\partial x} S(0,t) = 0$. $w_A$ is a growth rate of A-type, term $P_1D \cdot S(0,t)$ is transition flux from S-type to A-type, $w_{AS}$ is a rate of transition from A-type to the S-type. $\delta(x)$ shows that revertants appear at the interface boarder.
+\newline
+\newline
+
+\subsection{Bakward-propogation for numerical calculation}
+A-type
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:s-a-type-revertants}
+	A^n-A^{n-1}=w_AA^n\Delta t+P_1DS_1^{n}\Delta t-w_{AS}A^n \Delta t \\
+	A^n=\dfrac{A^{n-1}+P_1DS_1^{n}\Delta t}{1+w_{AS}\Delta t-w_A\Delta t}
+	\end{align}
+\end{linenomath}
+
+System of linear equations
+\begin{linenomath}
+	\begin{align} 
+	\label{eq:s-bacwardS}
+	\begin{cases}
+	(1-w_A\Delta t+w_{AS}\Delta t) A^n-P_1\Delta x F S^n_1=A^{n-1}&\text{ a-type with reveltants}\\
+	-w_{AS}\Delta t A^n+(1+2F-F(1-P_1h)-w_S\Delta t)S^n_1-FS^n_2=S^{n-1}_1 &\text{ partially adsorbing boarder}\\
+	-FS^n_{i-1}+(1+2F-w_S\Delta t)S^n_{i}-FS^n_{i+1}=S^{n-1}_i,  &\text{ in the bulk}\\\\ 
+	-FS^n_{N-1}+(1+F-w_S\Delta t)S^n_N=S^{n-1}_N &\text{ reflective boarder}\\
+	\end{cases}
+	\end{align}
+\end{linenomath}
+
+
+\label{key}
+
+\end{document}

@@ -1,0 +1,14 @@
+\contentsline {part}{I\hspace {1em}Kinetic model of biofilm formation}{2}{part.1}
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {section}{\numberline {2}Stochastic process to descibe reactive boundary }{2}{section.2}
+\contentsline {section}{\numberline {3}Kinetic equations}{3}{section.3}
+\contentsline {section}{\numberline {4}Analytical solution}{3}{section.4}
+\contentsline {section}{\numberline {5}Stationary solution}{5}{section.5}
+\contentsline {subsection}{\numberline {5.1}S-type}{5}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}A-type}{5}{subsection.5.2}
+\contentsline {section}{\numberline {6}Numerical solution}{6}{section.6}
+\contentsline {subsection}{\numberline {6.1}In the bulk}{6}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}At the adsorbing boundary $x=0$}{6}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}At the reflective boundary $x=L$}{7}{subsection.6.3}
+\contentsline {section}{\numberline {7}Model with revertants}{7}{section.7}
+\contentsline {subsection}{\numberline {7.1}Bakward-propogation for numerical calculation}{7}{subsection.7.1}
